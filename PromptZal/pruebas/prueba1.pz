@@ -1,0 +1,14 @@
+@modelo "claude-sonnet-4-6"
+@rol "analista de datos"
+@formato "markdown"
+
+// Agente válido
+AGENTE analista {
+    contexto = "Eres un analista de datos experto"
+    variable ventas = CARGAR("ventas.csv")
+    PREGUNTAR "Cuales son las 3 tendencias principales?" SOBRE ventas -> tendencias
+    GENERAR codigo DESDE "grafica de barras de " + tendencias -> script
+    RESUMIR tendencias EN 100 palabras -> resumen
+}
+EJECUTAR analista
+EXPORTAR resumen, script

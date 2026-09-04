@@ -1,0 +1,34 @@
+@modelo "claude-sonnet-4-6"
+@rol "asistente de analisis"
+@formato "markdown"
+
+/*
+  Caso largo con varios errores lexicos repartidos.
+  El analizador debe reportar cada error con su fila y columna
+  y seguir analizando el resto del archivo.
+*/
+
+AGENTE analista {
+  contexto = "Eres un analista de datos"
+
+  variable ventas = CARGAR("ventas.csv") ;
+  variable meta = 200%
+
+  PREGUNTAR "Cuales son las tendencias?" SOBRE ventas -> tendencias #revisar
+  ANALIZAR ventas SOBRE "margen de ganancia" -> hallazgos
+  GENERAR reporte DESDE tendencias + hallazgos -> salida $$$
+}
+
+AGENTE redactor {
+  contexto = "Eres un redactor creativo
+
+  variable tema = "inteligencia artificial en Guatemala"
+
+  GENERAR articulo DESDE tema -> borrador
+  RESUMIR borrador EN 100 palabras -> resumen?
+  TRADUCIR resumen EN "ingles" -> final
+}
+
+EJECUTAR analista
+EJECUTAR redactor
+EXPORTAR salida, final & extra

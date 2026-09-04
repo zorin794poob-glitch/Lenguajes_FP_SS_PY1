@@ -1,0 +1,152 @@
+<mxfile host="Electron" pages="3">
+  <diagram name="diagrama_Clases_Fase_1" id="Cnfmlv4p0k-fkdXtft1h">
+    <mxGraphModel dx="1926" dy="1204" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="6igonsETHnKTf41RCtnF-1" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;Main&lt;/b&gt;&lt;hr&gt;+ main(args:String[]):void&lt;br&gt;- mostrarTokens()&lt;br&gt;- mostrarErrores()" vertex="1">
+          <mxGeometry height="130" width="240" x="210" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="6igonsETHnKTf41RCtnF-2" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;Lexer&lt;/b&gt;&lt;hr&gt;- entrada:String&lt;br&gt;- posicion:int&lt;br&gt;- fila:int&lt;br&gt;- columna:int&lt;br&gt;- tokens:List&lt;Token&gt;&lt;br&gt;- errores:List&lt;ErrorLexico&gt;&lt;hr&gt;+ analizar():void&lt;br&gt;+ getTokens()&lt;br&gt;+ getErrores()" vertex="1">
+          <mxGeometry height="220" width="280" x="560" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="6igonsETHnKTf41RCtnF-3" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;Token&lt;/b&gt;&lt;hr&gt;- numero:int&lt;br&gt;- lexema:String&lt;br&gt;- tipo:TipoToken&lt;br&gt;- fila:int&lt;br&gt;- columna:int&lt;hr&gt;+ getters()" vertex="1">
+          <mxGeometry height="170" width="230" x="940" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="6igonsETHnKTf41RCtnF-4" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;&lt;&lt;enum&gt;&gt; TipoToken&lt;/b&gt;&lt;hr&gt;DIRECTIVA&lt;br&gt;PALABRA_RESERVADA&lt;br&gt;COMANDO_IA&lt;br&gt;CONECTOR&lt;br&gt;IDENTIFICADOR&lt;br&gt;CADENA&lt;br&gt;ENTERO / DECIMAL&lt;br&gt;OPERADORES / DELIMITADORES&lt;br&gt;FUNCION / EOF" vertex="1">
+          <mxGeometry height="220" width="200" x="1350" y="465" as="geometry" />
+        </mxCell>
+        <mxCell id="6igonsETHnKTf41RCtnF-5" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;ErrorLexico&lt;/b&gt;&lt;hr&gt;- lexema:String&lt;br&gt;- descripcion:String&lt;br&gt;- fila:int&lt;br&gt;- columna:int&lt;hr&gt;+ getters()" vertex="1">
+          <mxGeometry height="150" width="230" x="585" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="6igonsETHnKTf41RCtnF-6" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;ReporteHTML&lt;/b&gt;&lt;hr&gt;+ generarTokens(tokens,ruta):void&lt;br&gt;+ generarErrores(errores,ruta):void" vertex="1">
+          <mxGeometry height="130" width="280" x="560" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="6igonsETHnKTf41RCtnF-7" edge="1" parent="1" source="6igonsETHnKTf41RCtnF-1" style="endArrow=open" target="6igonsETHnKTf41RCtnF-2" value="usa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6igonsETHnKTf41RCtnF-8" edge="1" parent="1" source="6igonsETHnKTf41RCtnF-2" style="endArrow=open" target="6igonsETHnKTf41RCtnF-3" value="produce">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6igonsETHnKTf41RCtnF-9" edge="1" parent="1" source="6igonsETHnKTf41RCtnF-3" style="endArrow=open" target="6igonsETHnKTf41RCtnF-4" value="clasifica">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6igonsETHnKTf41RCtnF-10" edge="1" parent="1" source="6igonsETHnKTf41RCtnF-2" style="endArrow=open" target="6igonsETHnKTf41RCtnF-5" value="registra">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6igonsETHnKTf41RCtnF-11" edge="1" parent="1" source="6igonsETHnKTf41RCtnF-1" style="endArrow=open" target="6igonsETHnKTf41RCtnF-6" value="genera">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6igonsETHnKTf41RCtnF-12" edge="1" parent="1" source="6igonsETHnKTf41RCtnF-6" style="endArrow=open" target="6igonsETHnKTf41RCtnF-3" value="usa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6igonsETHnKTf41RCtnF-13" edge="1" parent="1" source="6igonsETHnKTf41RCtnF-6" style="endArrow=open" target="6igonsETHnKTf41RCtnF-5" value="usa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="Caso_Usos_Fase_1" id="sx64L_rNSXmUWHR70J5E">
+    <mxGraphModel dx="1586" dy="992" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="Z8MkvNqO1qYvYgW__u8Y-0" />
+        <mxCell id="Z8MkvNqO1qYvYgW__u8Y-1" parent="Z8MkvNqO1qYvYgW__u8Y-0" />
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-0" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeWidth=2;align=center;" value="&lt;div style=&quot;&quot;&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="560" width="680" x="380" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-1" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1" value="&lt;&lt;actor&gt;&gt;&lt;br&gt;Usuario" vertex="1">
+          <mxGeometry height="100" width="60" x="120" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-2" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="ellipse;whiteSpace=wrap;html=1" value="Seleccionar archivo .pz" vertex="1">
+          <mxGeometry height="60" width="190" x="480" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-3" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="ellipse;whiteSpace=wrap;html=1" value="Analizar archivo" vertex="1">
+          <mxGeometry height="60" width="180" x="440" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-4" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="ellipse;whiteSpace=wrap;html=1" value="Reconocer y clasificar tokens" vertex="1">
+          <mxGeometry height="60" width="220" x="710" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-5" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="ellipse;whiteSpace=wrap;html=1" value="Detectar errores léxicos" vertex="1">
+          <mxGeometry height="60" width="200" x="810" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-6" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="ellipse;whiteSpace=wrap;html=1" value="Mostrar tokens en consola" vertex="1">
+          <mxGeometry height="60" width="220" x="490" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-7" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="ellipse;whiteSpace=wrap;html=1" value="Generar reporte de tokens HTML" vertex="1">
+          <mxGeometry height="60" width="230" x="810" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-8" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="ellipse;whiteSpace=wrap;html=1" value="Generar reporte de errores HTML" vertex="1">
+          <mxGeometry height="60" width="250" x="750" y="505" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-9" edge="1" parent="Z8MkvNqO1qYvYgW__u8Y-1" source="aZ8CvnAXaj4RD64nuAZz-1" style="endArrow=none" target="aZ8CvnAXaj4RD64nuAZz-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-10" edge="1" parent="Z8MkvNqO1qYvYgW__u8Y-1" source="aZ8CvnAXaj4RD64nuAZz-1" style="endArrow=none" target="aZ8CvnAXaj4RD64nuAZz-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-11" edge="1" parent="Z8MkvNqO1qYvYgW__u8Y-1" source="aZ8CvnAXaj4RD64nuAZz-3" style="dashed=1;endArrow=open" target="aZ8CvnAXaj4RD64nuAZz-4" value="&lt;&lt;include&gt;&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-12" edge="1" parent="Z8MkvNqO1qYvYgW__u8Y-1" source="aZ8CvnAXaj4RD64nuAZz-3" style="dashed=1;endArrow=open" target="aZ8CvnAXaj4RD64nuAZz-5" value="&lt;&lt;include&gt;&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-13" edge="1" parent="Z8MkvNqO1qYvYgW__u8Y-1" source="aZ8CvnAXaj4RD64nuAZz-3" style="dashed=1;endArrow=open" target="aZ8CvnAXaj4RD64nuAZz-6" value="&lt;&lt;include&gt;&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-14" edge="1" parent="Z8MkvNqO1qYvYgW__u8Y-1" source="aZ8CvnAXaj4RD64nuAZz-3" style="dashed=1;endArrow=open" target="aZ8CvnAXaj4RD64nuAZz-7" value="&lt;&lt;include&gt;&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-15" edge="1" parent="Z8MkvNqO1qYvYgW__u8Y-1" source="aZ8CvnAXaj4RD64nuAZz-3" style="dashed=1;endArrow=open" target="aZ8CvnAXaj4RD64nuAZz-8" value="&lt;&lt;include&gt;&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-16" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0" value="&lt;table cellpadding=&quot;6&quot; cellspacing=&quot;0&quot; border=&quot;1&quot; style=&quot;width:100%;border-collapse:collapse;font-size:12px&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:160px&quot;&gt;&lt;b&gt;Actor / Caso de Uso&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;Usuario&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Descripción&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Persona que utiliza el analizador léxico de PromptZal.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Características&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Proporciona archivos .pz y consulta los resultados.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Relaciones&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Interactúa con los casos de uso principales.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Referencias&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Práctica 1 y Proyecto 1.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Autor&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" vertex="1">
+          <mxGeometry height="190" width="470" x="1140" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-17" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0" value="&lt;table cellpadding=&quot;6&quot; cellspacing=&quot;0&quot; border=&quot;1&quot; style=&quot;width:100%;border-collapse:collapse;font-size:12px&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:160px&quot;&gt;&lt;b&gt;Actor / Caso de Uso&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;Seleccionar archivo .pz&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Descripción&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Permite seleccionar el archivo PromptZal que será analizado.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Características&lt;/b&gt;&lt;/td&gt;&lt;td&gt;El archivo contiene un programa PromptZal.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Relaciones&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Proporciona la entrada para el análisis.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Referencias&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Práctica 1.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Autor&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" vertex="1">
+          <mxGeometry height="190" width="430" x="1140" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-18" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0" value="&lt;table cellpadding=&quot;6&quot; cellspacing=&quot;0&quot; border=&quot;1&quot; style=&quot;width:100%;border-collapse:collapse;font-size:12px&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:160px&quot;&gt;&lt;b&gt;Actor / Caso de Uso&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;Analizar programa&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Descripción&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Ejecuta el análisis léxico sobre el contenido proporcionado.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Características&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Recorre la entrada y produce tokens y errores.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Relaciones&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Incluye reconocimiento de tokens y detección de errores.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Referencias&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Práctica 1 y Proyecto 1.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Autor&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" vertex="1">
+          <mxGeometry height="200" width="480" x="1140" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="aZ8CvnAXaj4RD64nuAZz-19" parent="Z8MkvNqO1qYvYgW__u8Y-1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0" value="&lt;table cellpadding=&quot;6&quot; cellspacing=&quot;0&quot; border=&quot;1&quot; style=&quot;width:100%;border-collapse:collapse;font-size:12px&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:160px&quot;&gt;&lt;b&gt;Actor / Caso de Uso&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;Generar reportes&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Descripción&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Produce los reportes HTML de los resultados.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Características&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Tokens, errores y estadísticas en Proyecto 1.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Relaciones&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Usa los resultados generados por el analizador.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Referencias&lt;/b&gt;&lt;/td&gt;&lt;td&gt;Proyecto 1.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Autor&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" vertex="1">
+          <mxGeometry height="170" width="440" x="1140" y="565" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="QIphR8t_0V_njRnDrsLB" name="diagrama_Clases_Fase_2">
+    <mxGraphModel dx="1586" dy="992" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="WhY5VGy7i3I41Zhw8GUH-1" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;VentanaPrincipal&lt;/b&gt;&lt;hr&gt;- editor:JTextArea&lt;br&gt;- tablaTokens:JTable&lt;br&gt;- tablaErrores:JTable&lt;br&gt;- archivoActual:File&lt;hr&gt;+ abrir():void&lt;br&gt;+ guardar():void&lt;br&gt;+ analizar():void&lt;br&gt;+ mostrarTokens():void&lt;br&gt;+ mostrarErrores():void" vertex="1">
+          <mxGeometry height="220" width="280" x="240" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="WhY5VGy7i3I41Zhw8GUH-2" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;Lexer&lt;/b&gt;&lt;hr&gt;- entrada:String&lt;br&gt;- posicion:int&lt;br&gt;- fila:int&lt;br&gt;- columna:int&lt;br&gt;- tokens:List&lt;Token&gt;&lt;br&gt;- errores:List&lt;ErrorLexico&gt;&lt;hr&gt;+ analizar():void&lt;br&gt;+ getTokens()&lt;br&gt;+ getErrores()" vertex="1">
+          <mxGeometry height="210" width="290" x="570" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="WhY5VGy7i3I41Zhw8GUH-3" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;Token&lt;/b&gt;&lt;hr&gt;- numero:int&lt;br&gt;- lexema:String&lt;br&gt;- tipo:TipoToken&lt;br&gt;- fila:int&lt;br&gt;- columna:int&lt;hr&gt;+ getters()" vertex="1">
+          <mxGeometry height="170" width="230" x="910" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="WhY5VGy7i3I41Zhw8GUH-4" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;&lt;&lt;enum&gt;&gt; TipoToken&lt;/b&gt;&lt;hr&gt;DIRECTIVA&lt;br&gt;PALABRA_RESERVADA&lt;br&gt;COMANDO_IA&lt;br&gt;CONECTOR&lt;br&gt;IDENTIFICADOR&lt;br&gt;CADENA / ENTERO / DECIMAL&lt;br&gt;OPERADORES / DELIMITADORES&lt;br&gt;FUNCION / EOF" vertex="1">
+          <mxGeometry height="220" width="200" x="1190" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="WhY5VGy7i3I41Zhw8GUH-5" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;ErrorLexico&lt;/b&gt;&lt;hr&gt;- lexema:String&lt;br&gt;- descripcion:String&lt;br&gt;- fila:int&lt;br&gt;- columna:int&lt;hr&gt;+ getters()" vertex="1">
+          <mxGeometry height="150" width="230" x="910" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="WhY5VGy7i3I41Zhw8GUH-6" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;ReporteHTML&lt;/b&gt;&lt;hr&gt;+ generarTokens(tokens,ruta):void&lt;br&gt;+ generarErrores(errores,ruta):void&lt;br&gt;+ generarEstadisticas(tokens,errores,lineas,ruta):void" vertex="1">
+          <mxGeometry height="160" width="290" x="570" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="WhY5VGy7i3I41Zhw8GUH-7" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;Estadisticas&lt;/b&gt;&lt;hr&gt;- frecuenciaPorTipo:Map&lt;br&gt;- totalTokens:int&lt;br&gt;- totalLineas:int&lt;br&gt;- totalErrores:int&lt;hr&gt;+ calcular():void&lt;br&gt;+ getFrecuenciaPorTipo():Map" vertex="1">
+          <mxGeometry height="170" width="280" x="240" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="WhY5VGy7i3I41Zhw8GUH-8" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;GeneradorAFD&lt;/b&gt;&lt;hr&gt;- dot:String&lt;br&gt;- rutaSalida:String&lt;hr&gt;+ generarDOT():String&lt;br&gt;+ generarImagen():void&lt;br&gt;+ guardarDOT():void" vertex="1">
+          <mxGeometry height="180" width="200" x="1190" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="WhY5VGy7i3I41Zhw8GUH-9" parent="1" style="whiteSpace=wrap;html=1;align=left;verticalAlign=top" value="&lt;b&gt;Main&lt;/b&gt;&lt;hr&gt;+ main(args:String[]):void" vertex="1">
+          <mxGeometry height="100" width="280" x="240" y="890" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

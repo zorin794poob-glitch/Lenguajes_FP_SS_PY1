@@ -1,0 +1,20 @@
+@modelo "claude-sonnet-4-6"
+@rol "ingeniero de datos"
+@formato "markdown"
+
+// Caso de prueba para el nuevo comando CODIFICAR.
+// CODIFICAR toma un contenido y lo transforma a otro formato o codificacion.
+
+AGENTE procesador {
+  contexto = "Eres un ingeniero de datos experto? en formatos";
+
+  variable datos = CARGAR("clientes.json")
+
+  CODIFICAR datos EN "base64" -> datos_codificados
+  CODIFICAR datos COMO "xml" -> datos_xml
+
+  RESUMIR datos_xml EN 60 palabras -> resumen
+}
+
+EJECUTAR procesador
+EXPORTAR datos_codificados, datos_xml, resumen

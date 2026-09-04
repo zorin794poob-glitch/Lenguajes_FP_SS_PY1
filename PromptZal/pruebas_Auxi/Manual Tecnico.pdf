@@ -1,0 +1,51 @@
+@modelo "claude-sonnet-4-6"
+@rol "asistente de analisis de negocio"
+@formato "markdown"
+
+/*
+  PromptZal - caso de prueba completo y valido.
+  Este programa ejercita:
+    - las tres directivas
+    - los comandos PREGUNTAR, GENERAR, RESUMIR, ANALIZAR,
+      TRADUCIR, CLASIFICAR y EXTRAER
+    - la funcion CARGAR
+    - los conectores SOBRE, DESDE, EN, COMO y ->
+    - numeros enteros y decimales, y concatenacion con +
+*/
+
+AGENTE analista {
+  contexto = "Eres un analista de datos experto en retail"
+
+  variable ventas = CARGAR("ventas.csv")
+  variable limite = 150
+  variable umbral = 0.85
+
+  PREGUNTAR "Cuales son las 3 tendencias principales?" SOBRE ventas -> tendencias
+  ANALIZAR ventas SOBRE "estacionalidad y anomalias" -> hallazgos
+  GENERAR codigo DESDE "grafica de barras de " + tendencias COMO "python" -> script
+  RESUMIR hallazgos EN limite -> resumen
+}
+
+AGENTE moderador {
+  contexto = "Clasificas y depuras resenas de clientes"
+
+  variable resenas = CARGAR("reviews.txt")
+
+  CLASIFICAR resenas EN "positivo, neutral, negativo" -> etiquetas
+  EXTRAER "nombres de productos mencionados" DESDE resenas -> productos
+  RESUMIR etiquetas EN 80 palabras -> informe   // resumen breve para el reporte
+}
+
+AGENTE editor {
+  contexto = "Eres un editor bilingue"
+
+  variable base = "Reporte mensual de ventas y satisfaccion"
+
+  TRADUCIR base EN "ingles" -> titulo
+  GENERAR portada DESDE titulo + " 2026" COMO "markdown" -> portada
+}
+
+EJECUTAR analista
+EJECUTAR moderador
+EJECUTAR editor
+EXPORTAR resumen, script, informe, productos, portada

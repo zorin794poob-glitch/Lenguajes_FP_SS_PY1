@@ -1,0 +1,8 @@
+@modelo "claude-sonnet-4-6"
+AGENTE errores {
+    contexto = "Prueba de errores
+    variable dato = CARGAR("datos.csv")
+    ANALIZAR dato SOBRE "criterio" -> resultado
+    # este caracter no existe
+}
+EJECUTAR errores

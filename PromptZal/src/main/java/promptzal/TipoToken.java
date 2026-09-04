@@ -1,0 +1,18 @@
+package promptzal;
+
+public enum TipoToken {
+    DIRECTIVA,
+    PALABRA_RESERVADA,
+    COMANDO_IA,
+    CONECTOR,
+    IDENTIFICADOR,
+    CADENA,
+    ENTERO,
+    DECIMAL,
+    OPERADOR_ASIGNACION,
+    OPERADOR_CONCATENACION,
+    FLECHA,
+    DELIMITADOR,
+    FUNCION,
+    EOF
+}
