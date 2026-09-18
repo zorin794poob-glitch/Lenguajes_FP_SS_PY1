@@ -1,16 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package promptzal.iu;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.nio.charset.StandardCharsets;
@@ -30,12 +28,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import promptzal.Lexer.Lexer;
 import promptzal.generador_graphiz.GeneradorAFD;
@@ -44,15 +43,28 @@ import promptzal.modelo.Token;
 import promptzal.reportes.Estadisticas;
 import promptzal.reportes.ReportesHtml;
 
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+
 /**
- *
- * @author jonathan-zorin
+ * Interfaz gráfica principal de PromptZal. Se conserva la funcionalidad
+ * original y se mejora solamente la presentación.
  */
 public class Interfaz_Grafica extends JFrame {
 
+    private static final Color AZUL = new Color(25, 55, 85);
+    private static final Color AZUL_CLARO = new Color(42, 115, 155);
+    private static final Color VERDE = new Color(42, 115, 85);
+    private static final Color FONDO = new Color(244, 247, 250);
+    private static final Color BORDE = new Color(215, 222, 229);
+
     private final JTextArea editor = new JTextArea();
-    private final JTable tablaTokens = new JTable(), tablaErrores = new JTable();
-    private final JLabel estado = new JLabel("Listo."), ct = new JLabel("0"), ce = new JLabel("0"), cl = new JLabel("0");
+    private final JTable tablaTokens = new JTable();
+    private final JTable tablaErrores = new JTable();
+    private final JLabel estado = new JLabel("Listo para analizar.");
+    private final JLabel ct = new JLabel("0");
+    private final JLabel ce = new JLabel("0");
+    private final JLabel cl = new JLabel("0");
+
     private Path actual;
     private List<Token> tokens = List.of();
     private List<ErrorLexico> errores = List.of();
@@ -62,229 +74,391 @@ public class Interfaz_Grafica extends JFrame {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {
         }
+
         setTitle("PromptZal • Analizador Léxico");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1250, 820);
         setMinimumSize(new Dimension(1050, 700));
         setLocationRelativeTo(null);
+
         build();
+
         editor.setText(ejemplo());
-        update(1);
+        actualizarContadores(1);
     }
 
     private void build() {
         setJMenuBar(menu());
+
         JPanel root = new JPanel(new BorderLayout());
-        root.setBackground(new Color(245, 247, 250));
+        root.setBackground(FONDO);
         root.add(header(), BorderLayout.NORTH);
-        JPanel c = new JPanel(new BorderLayout(12, 12));
-        c.setOpaque(false);
-        c.setBorder(new EmptyBorder(14, 16, 10, 16));
-        c.add(editorPanel(), BorderLayout.CENTER);
-        c.add(results(), BorderLayout.SOUTH);
-        root.add(c, BorderLayout.CENTER);
+
+        JPanel centro = new JPanel(new BorderLayout(12, 12));
+        centro.setOpaque(false);
+        centro.setBorder(new EmptyBorder(14, 16, 10, 16));
+
+        centro.add(editorPanel(), BorderLayout.CENTER);
+
+        JSplitPane resultados = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT,
+                editorPanel(),
+                results()
+        );
+        resultados.setDividerLocation(500);
+        resultados.setResizeWeight(0.60);
+        resultados.setBorder(null);
+        resultados.setOpaque(false);
+
+        // El editor y resultados se muestran como una sola zona dividida.
+        centro.removeAll();
+        centro.add(resultados, BorderLayout.CENTER);
+
+        root.add(centro, BorderLayout.CENTER);
         root.add(status(), BorderLayout.SOUTH);
+
         setContentPane(root);
         tables();
     }
 
     private JPanel header() {
-        JPanel p = new JPanel(new BorderLayout(15, 0));
-        p.setBackground(new Color(25, 55, 85));
-        p.setBorder(new EmptyBorder(16, 20, 16, 20));
-        JPanel x = new JPanel();
-        x.setOpaque(false);
-        x.setLayout(new BoxLayout(x, BoxLayout.Y_AXIS));
-        JLabel a = new JLabel("PromptZal");
-        a.setForeground(Color.WHITE);
-        a.setFont(new Font("SansSerif", Font.BOLD, 28));
-        JLabel b = new JLabel("Analizador léxico • Proyecto 1 • Jonathan Zorin ");
-        b.setForeground(new Color(220, 230, 240));
-        x.add(a);
-        x.add(Box.createVerticalStrut(3));
-        x.add(b);
-        p.add(x, BorderLayout.WEST);
-        JPanel z = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
-        z.setOpaque(false);
-        JButton an = button("▶  Analizar", new Color(42, 115, 85));
-        an.addActionListener(e -> analizar());
-        JButton af = button("◈  AFD", new Color(72, 88, 120));
-        af.addActionListener(e -> afd());
-        z.add(an);
-        z.add(af);
-        p.add(z, BorderLayout.EAST);
+        JPanel p = new JPanel(new BorderLayout(20, 0));
+        p.setBackground(AZUL);
+        p.setBorder(new EmptyBorder(18, 24, 18, 24));
+
+        JPanel identidad = new JPanel();
+        identidad.setOpaque(false);
+        identidad.setLayout(new BoxLayout(identidad, BoxLayout.Y_AXIS));
+
+        JLabel titulo = new JLabel("PromptZal");
+        titulo.setForeground(Color.WHITE);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 30));
+
+        JLabel subtitulo = new JLabel(
+                "Analizador léxico  •  Proyecto 1  • Jonathan Zorin");
+        subtitulo.setForeground(new Color(218, 229, 239));
+        subtitulo.setFont(new Font("SansSerif", Font.PLAIN, 14));
+
+        identidad.add(titulo);
+        identidad.add(Box.createVerticalStrut(4));
+        identidad.add(subtitulo);
+
+        JPanel acciones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 9, 2));
+        acciones.setOpaque(false);
+
+        JButton analizar = button("▶  Analizar", VERDE);
+        JButton afd = button("◇  Generar AFD", AZUL_CLARO);
+
+        analizar.setToolTipText("Analizar el archivo carácter por carácter");
+        afd.setToolTipText("Generar el AFD con Graphviz");
+
+        analizar.addActionListener(e -> analizar());
+        afd.addActionListener(e -> afd());
+
+        acciones.add(analizar);
+        acciones.add(afd);
+
+        p.add(identidad, BorderLayout.WEST);
+        p.add(acciones, BorderLayout.EAST);
+
         return p;
     }
 
     private JPanel editorPanel() {
         JPanel p = card("EDITOR .PZ");
-        JPanel t = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 5));
-        t.setOpaque(false);
-        JButton l = sec("Limpiar");
-        l.addActionListener(e -> editor.setText(""));
-        JButton ej = sec("Cargar ejemplo");
-        ej.addActionListener(e -> editor.setText(ejemplo()));
-        JButton cp = sec("Copiar");
-        cp.addActionListener(e -> Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(editor.getText()), null));
-        t.add(l);
-        t.add(ej);
-        t.add(cp);
-        editor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+
+        JPanel herramientas = new JPanel(new FlowLayout(FlowLayout.LEFT, 7, 5));
+        herramientas.setOpaque(false);
+
+        JButton abrir = sec("Abrir");
+        JButton guardar = sec("Guardar");
+        JButton guardarComo = sec("Guardar como");
+        JButton limpiar = sec("Limpiar");
+        JButton ejemplo = sec("Cargar ejemplo");
+        JButton copiar = sec("Copiar");
+
+        abrir.addActionListener(e -> abrir());
+        guardar.addActionListener(e -> guardar());
+        guardarComo.addActionListener(e -> guardarComo());
+        limpiar.addActionListener(e -> {
+            editor.setText("");
+            estado.setText("Editor limpiado.");
+        });
+        ejemplo.addActionListener(e -> {
+            editor.setText(ejemplo());
+            estado.setText("Ejemplo cargado.");
+        });
+        copiar.addActionListener(e -> copiarTexto());
+
+        herramientas.add(abrir);
+        herramientas.add(guardar);
+        herramientas.add(guardarComo);
+        herramientas.add(Box.createHorizontalStrut(8));
+        herramientas.add(ejemplo);
+        herramientas.add(limpiar);
+        herramientas.add(copiar);
+
+        editor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 15));
         editor.setTabSize(4);
-        editor.setBorder(new EmptyBorder(10, 10, 10, 10));
-        p.add(t, BorderLayout.NORTH);
-        p.add(new JScrollPane(editor), BorderLayout.CENTER);
+        editor.setLineWrap(false);
+        editor.setBackground(new Color(252, 253, 255));
+        editor.setForeground(new Color(35, 43, 52));
+        editor.setCaretColor(AZUL_CLARO);
+        editor.setMargin(new Insets(10, 10, 10, 10));
+
+        JScrollPane scroll = new JScrollPane(editor);
+        scroll.setBorder(new LineBorder(BORDE));
+
+        p.add(herramientas, BorderLayout.NORTH);
+        p.add(scroll, BorderLayout.CENTER);
+
         return p;
     }
 
     private JPanel results() {
-        JPanel p = card("RESULTADOS");
+        JPanel p = card("RESULTADOS DEL ANÁLISIS");
+
         JTabbedPane tabs = new JTabbedPane();
-        tabs.addTab("Tokens", new JScrollPane(tablaTokens));
-        tabs.addTab("Errores", new JScrollPane(tablaErrores));
-        JPanel m = new JPanel(new GridLayout(1, 3, 10, 0));
-        m.setOpaque(false);
-        m.setBorder(new EmptyBorder(10, 0, 0, 0));
-        m.add(metric("TOKENS", ct));
-        m.add(metric("ERRORES", ce));
-        m.add(metric("LÍNEAS", cl));
+        tabs.setFont(new Font("SansSerif", Font.BOLD, 13));
+
+        tabs.addTab("  Tokens  ", new JScrollPane(tablaTokens));
+        tabs.addTab("  Errores  ", new JScrollPane(tablaErrores));
+
+        JPanel metricas = new JPanel(new GridLayout(1, 3, 10, 0));
+        metricas.setOpaque(false);
+        metricas.setBorder(new EmptyBorder(10, 0, 0, 0));
+
+        metricas.add(metric("TOKENS RECONOCIDOS", ct, AZUL_CLARO));
+        metricas.add(metric("ERRORES LÉXICOS", ce, new Color(165, 75, 60)));
+        metricas.add(metric("LÍNEAS", cl, VERDE));
+
         p.add(tabs, BorderLayout.CENTER);
-        p.add(m, BorderLayout.SOUTH);
-        p.setPreferredSize(new Dimension(1000, 330));
+        p.add(metricas, BorderLayout.SOUTH);
+
         return p;
     }
 
-    private JPanel metric(String s, JLabel v) {
-        JPanel p = new JPanel(new BorderLayout());
+    private JPanel metric(String titulo, JLabel valor, Color color) {
+        JPanel p = new JPanel(new BorderLayout(8, 0));
         p.setBackground(Color.WHITE);
-        p.setBorder(BorderFactory.createLineBorder(new Color(215, 220, 226)));
-        JLabel l = new JLabel(s);
-        l.setFont(new Font("SansSerif", Font.BOLD, 10));
-        v.setFont(new Font("SansSerif", Font.BOLD, 20));
-        p.add(l, BorderLayout.WEST);
-        p.add(v, BorderLayout.EAST);
+        p.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(BORDE),
+                new EmptyBorder(8, 13, 8, 13)));
+
+        JLabel t = new JLabel(titulo);
+        t.setFont(new Font("SansSerif", Font.BOLD, 10));
+        t.setForeground(new Color(100, 112, 124));
+
+        valor.setFont(new Font("SansSerif", Font.BOLD, 22));
+        valor.setForeground(color);
+
+        p.add(t, BorderLayout.WEST);
+        p.add(valor, BorderLayout.EAST);
+
         return p;
     }
 
     private JPanel status() {
         JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(new Color(232, 236, 240));
-        p.setBorder(new EmptyBorder(6, 16, 7, 16));
+        p.setBackground(new Color(232, 237, 242));
+        p.setBorder(new EmptyBorder(7, 16, 8, 16));
+
+        estado.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        estado.setForeground(new Color(75, 88, 101));
+
         p.add(estado, BorderLayout.WEST);
         return p;
     }
 
-    private JPanel card(String s) {
-        JPanel p = new JPanel(new BorderLayout(0, 7));
+    private JPanel card(String titulo) {
+        JPanel p = new JPanel(new BorderLayout(0, 8));
         p.setBackground(Color.WHITE);
-        p.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(215, 220, 226)), new EmptyBorder(10, 12, 12, 12)));
-        JLabel l = new JLabel(s);
+        p.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(BORDE),
+                new EmptyBorder(10, 12, 12, 12)));
+
+        JLabel l = new JLabel(titulo);
         l.setFont(new Font("SansSerif", Font.BOLD, 11));
+        l.setForeground(AZUL);
+
         p.add(l, BorderLayout.NORTH);
         return p;
     }
 
-    private JButton button(String s, Color c) {
-        JButton b = new JButton(s);
+    private JButton button(String texto, Color color) {
+        JButton b = new JButton(texto);
         b.setForeground(Color.WHITE);
-        b.setBackground(c);
+        b.setBackground(color);
         b.setFocusPainted(false);
         b.setBorderPainted(false);
+        b.setFont(new Font("SansSerif", Font.BOLD, 13));
+        b.setBorder(new EmptyBorder(10, 15, 10, 15));
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return b;
     }
 
-    private JButton sec(String s) {
-        JButton b = new JButton(s);
+    private JButton sec(String texto) {
+        JButton b = new JButton(texto);
         b.setFocusPainted(false);
+        b.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        b.setBackground(Color.WHITE);
+        b.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(BORDE),
+                new EmptyBorder(7, 11, 7, 11)));
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return b;
     }
 
     private void tables() {
-        tablaTokens.setModel(new javax.swing.table.DefaultTableModel(new Object[]{"#", "Lexema", "Tipo", "Fila", "Columna"}, 0) {
+        tablaTokens.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[]{"#", "Lexema", "Tipo", "Fila", "Columna"}, 0) {
+            @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
             }
         });
-        tablaErrores.setModel(new javax.swing.table.DefaultTableModel(new Object[]{"Lexema", "Tipo", "Descripción", "Fila", "Columna"}, 0) {
+
+        tablaErrores.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[]{"Lexema", "Tipo", "Descripción", "Fila", "Columna"}, 0) {
+            @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
             }
         });
-        tablaTokens.setAutoCreateRowSorter(true);
-        tablaErrores.setAutoCreateRowSorter(true);
-        tablaTokens.setRowHeight(27);
-        tablaErrores.setRowHeight(27);
+
+        prepararTabla(tablaTokens);
+        prepararTabla(tablaErrores);
+    }
+
+    private void prepararTabla(JTable tabla) {
+        tabla.setAutoCreateRowSorter(true);
+        tabla.setRowHeight(28);
+        tabla.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        tabla.setGridColor(new Color(228, 233, 238));
+        tabla.setSelectionBackground(new Color(218, 231, 242));
+        tabla.setSelectionForeground(new Color(30, 40, 50));
+
+        tabla.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 12));
+        tabla.getTableHeader().setBackground(AZUL);
+        tabla.getTableHeader().setForeground(Color.WHITE);
+        tabla.getTableHeader().setPreferredSize(new Dimension(0, 30));
     }
 
     private JMenuBar menu() {
         JMenuBar m = new JMenuBar();
-        JMenu a = new JMenu("Archivo");
-        a.add(item("Abrir .pz", e -> abrir()));
-        a.add(item("Guardar", e -> guardar()));
-        a.add(item("Guardar como...", e -> guardarComo()));
-        a.addSeparator();
-        a.add(item("Salir", e -> dispose()));
-        JMenu r = new JMenu("Reportes HTML");
-        r.add(item("Tokens", e -> open(Path.of("reportes/reporte_tokens.html"))));
-        r.add(item("Errores", e -> open(Path.of("reportes/reporte_errores.html"))));
-        r.add(item("Estadísticas", e -> open(Path.of("reportes/reporte_estadisticas.html"))));
-        m.add(a);
-        m.add(r);
+
+        JMenu archivo = new JMenu("Archivo");
+        archivo.add(item("Abrir .pz", e -> abrir()));
+        archivo.add(item("Guardar", e -> guardar()));
+        archivo.add(item("Guardar como...", e -> guardarComo()));
+        archivo.addSeparator();
+        archivo.add(item("Salir", e -> dispose()));
+
+        JMenu reportes = new JMenu("Reportes HTML");
+        reportes.add(item("Tokens", e -> open(Path.of("reportes/reporte_tokens.html"))));
+        reportes.add(item("Errores", e -> open(Path.of("reportes/reporte_errores.html"))));
+        reportes.add(item("Estadísticas", e -> open(Path.of("reportes/reporte_estadisticas.html"))));
+
+        m.add(archivo);
+        m.add(reportes);
+
         return m;
     }
 
-    private JMenuItem item(String s, java.awt.event.ActionListener a) {
-        JMenuItem i = new JMenuItem(s);
-        i.addActionListener(a);
+    private JMenuItem item(String texto, java.awt.event.ActionListener accion) {
+        JMenuItem i = new JMenuItem(texto);
+        i.addActionListener(accion);
         return i;
     }
 
     private void analizar() {
         Lexer l = new Lexer(editor.getText());
         l.analizar();
+
         tokens = l.getTokens();
         errores = l.getErrores();
-        load();
-        update(l.getTotalLineas());
+
+        cargarTablas();
+        actualizarContadores(l.getTotalLineas());
+
         try {
-            Path d = Path.of("reportes");
-            ReportesHtml.generarTokens(tokens, d.resolve("reporte_tokens.html"));
-            ReportesHtml.generarErrores(errores, d.resolve("reporte_errores.html"));
-            ReportesHtml.generarEstadisticas(new Estadisticas(tokens, errores, l.getTotalLineas()), d.resolve("reporte_estadisticas.html"));
-            estado.setText("Análisis terminado • " + (tokens.size() - 1) + " tokens • " + errores.size() + " errores.");
+            Path carpeta = Path.of("reportes");
+            Files.createDirectories(carpeta);
+
+            ReportesHtml.generarTokens(
+                    tokens, carpeta.resolve("reporte_tokens.html"));
+
+            ReportesHtml.generarErrores(
+                    errores, carpeta.resolve("reporte_errores.html"));
+
+            ReportesHtml.generarEstadisticas(
+                    new Estadisticas(tokens, errores, l.getTotalLineas()),
+                    carpeta.resolve("reporte_estadisticas.html"));
+
+            estado.setText("Análisis terminado  •  "
+                    + contarTokensReales() + " tokens  •  "
+                    + errores.size() + " errores.");
+
         } catch (Exception e) {
             error(e);
         }
     }
 
-    private void load() {
+    private int contarTokensReales() {
+        int total = 0;
+        for (Token t : tokens) {
+            if (t.getTipo() != promptzal.modelo.TipoToken.EOF) {
+                total++;
+            }
+        }
+        return total;
+    }
+
+    private void cargarTablas() {
         var a = (javax.swing.table.DefaultTableModel) tablaTokens.getModel();
         a.setRowCount(0);
+
         for (Token t : tokens) {
-            a.addRow(new Object[]{t.getNumero(), t.getLexema(), t.getTipo(), t.getFila(), t.getColumna()});
+            if (t.getTipo() == promptzal.modelo.TipoToken.EOF) {
+                continue;
+            }
+            a.addRow(new Object[]{
+                t.getNumero(), t.getLexema(), t.getTipo(),
+                t.getFila(), t.getColumna()
+            });
         }
+
         var b = (javax.swing.table.DefaultTableModel) tablaErrores.getModel();
         b.setRowCount(0);
+
         for (ErrorLexico e : errores) {
-            b.addRow(new Object[]{e.getLexema(), e.getTipo(), e.getDescripcion(), e.getFila(), e.getColumna()});
+            b.addRow(new Object[]{
+                e.getLexema(), e.getTipo(), e.getDescripcion(),
+                e.getFila(), e.getColumna()
+            });
         }
     }
 
-    private void update(int lines) {
-        ct.setText(String.valueOf(Math.max(0, tokens.size() - 1)));
+    private void actualizarContadores(int lineas) {
+        ct.setText(String.valueOf(contarTokensReales()));
         ce.setText(String.valueOf(errores.size()));
-        cl.setText(String.valueOf(lines));
+        cl.setText(String.valueOf(lineas));
     }
 
     private void abrir() {
         JFileChooser f = new JFileChooser();
-        f.setFileFilter(new FileNameExtensionFilter("PromptZal (*.pz)", "pz"));
-        if (f.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)try {
-            actual = f.getSelectedFile().toPath();
-            editor.setText(Files.readString(actual, StandardCharsets.UTF_8));
-            estado.setText("Abierto: " + actual.getFileName());
-        } catch (Exception e) {
-            error(e);
+        f.setDialogTitle("Abrir programa PromptZal");
+        f.setFileFilter(new FileNameExtensionFilter(
+                "Archivos PromptZal (*.pz)", "pz"));
+
+        if (f.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                actual = f.getSelectedFile().toPath();
+                editor.setText(Files.readString(actual, StandardCharsets.UTF_8));
+                estado.setText("Archivo abierto  •  " + actual.getFileName());
+            } catch (Exception e) {
+                error(e);
+            }
         }
     }
 
@@ -293,9 +467,10 @@ public class Interfaz_Grafica extends JFrame {
             guardarComo();
             return;
         }
+
         try {
             Files.writeString(actual, editor.getText(), StandardCharsets.UTF_8);
-            estado.setText("Guardado: " + actual.getFileName());
+            estado.setText("Archivo guardado  •  " + actual.getFileName());
         } catch (Exception e) {
             error(e);
         }
@@ -303,41 +478,99 @@ public class Interfaz_Grafica extends JFrame {
 
     private void guardarComo() {
         JFileChooser f = new JFileChooser();
-        f.setFileFilter(new FileNameExtensionFilter("PromptZal (*.pz)", "pz"));
+        f.setDialogTitle("Guardar programa PromptZal");
+        f.setFileFilter(new FileNameExtensionFilter(
+                "Archivos PromptZal (*.pz)", "pz"));
+
         if (f.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             Path p = f.getSelectedFile().toPath();
-            if (!p.toString().endsWith(".pz")) {
+
+            if (!p.toString().toLowerCase().endsWith(".pz")) {
                 p = Path.of(p + ".pz");
             }
+
             actual = p;
             guardar();
         }
     }
 
+    private void copiarTexto() {
+        Toolkit.getDefaultToolkit()
+                .getSystemClipboard()
+                .setContents(new StringSelection(editor.getText()), null);
+        estado.setText("Contenido copiado al portapapeles.");
+    }
+
     private void afd() {
         try {
-            Path p = GeneradorAFD.generar(Path.of("reportes"));
-            estado.setText("AFD generado.");
-            open(p);
+            Path png = GeneradorAFD.generar(Path.of("reportes"));
+
+            estado.setText("AFD generado correctamente.");
+
+            open(png);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "El AFD fue generado correctamente.\n\n"
+                    + "PNG:\n" + png.toAbsolutePath()
+                    + "\n\nDOT:\n"
+                    + png.getParent().resolve("afd_promptzal.dot").toAbsolutePath(),
+                    "AFD • Graphviz",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
         } catch (Exception e) {
-            error(e);
+            String mensaje = e.getMessage();
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    mensaje == null
+                            ? "No fue posible generar el AFD."
+                            : mensaje,
+                    "Graphviz",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            estado.setText("No se pudo generar el PNG del AFD.");
         }
     }
 
     private void open(Path p) {
         try {
-            if (Files.exists(p)) {
-                Desktop.getDesktop().open(p.toFile());
-            } else {
-                JOptionPane.showMessageDialog(this, "Primero genere el archivo.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            if (!Files.exists(p)) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "El archivo todavía no existe:\n" + p.toAbsolutePath(),
+                        "Aviso",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
             }
+
+            if (!Desktop.isDesktopSupported()) {                JOptionPane.showMessageDialog(
+                        this,
+                        "El sistema no permite abrir archivos automáticamente.\n"
+                        + "Puedes abrir manualmente:\n" + p.toAbsolutePath(),
+                        "Aviso",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+                return;
+            }
+
+            Desktop.getDesktop().open(p.toFile());
+
         } catch (Exception e) {
             error(e);
         }
     }
 
     private void error(Exception e) {
-        JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(
+                this,
+                e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 
     private String ejemplo() {

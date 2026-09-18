@@ -62,8 +62,8 @@ public class GeneradorAFD {
         pb.redirectErrorStream(true);
 
         Process proceso = pb.start();
-        String salidaProceso
-                = new String(proceso.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        String salidaProceso =
+                new String(proceso.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
         int codigo = proceso.waitFor();
 
@@ -79,8 +79,8 @@ public class GeneradorAFD {
         String path = System.getenv("PATH");
 
         if (path != null) {
-            java.util.StringTokenizer partes
-                    = new java.util.StringTokenizer(path, java.io.File.pathSeparator);
+            java.util.StringTokenizer partes =
+                    new java.util.StringTokenizer(path, java.io.File.pathSeparator);
 
             while (partes.hasMoreTokens()) {
                 String carpeta = partes.nextToken();

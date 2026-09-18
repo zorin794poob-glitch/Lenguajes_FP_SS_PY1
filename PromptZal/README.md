@@ -25,3 +25,38 @@ Analizador léxico manual desarrollado en Java para la Práctica 1 de Lenguajes 
 ## Importante
 
 La práctica incluye una comprobación de conocimiento. Revisa y comprende especialmente `Lexer.java`, porque allí se realiza el recorrido carácter por carácter y el reconocimiento de tokens.
+
+
+## Graphviz y AFD
+
+El botón **Generar AFD** crea:
+- `reportes/afd_promptzal.dot`: definición del autómata.
+- `reportes/afd_promptzal.png`: imagen del AFD.
+- `reportes/afd_promptzal.svg`: versión vectorial.
+
+El programa busca `dot` en el `PATH` y en rutas comunes de Ubuntu. Si Graphviz no está instalado, el programa muestra instrucciones claras en lugar de cerrarse.
+
+En Ubuntu puedes ejecutar:
+
+```bash
+sudo apt update
+sudo apt install graphviz
+dot -V
+```
+
+También se incluye `INSTALAR_GRAPHVIZ_UBUNTU.sh`.
+
+## Interfaz
+
+La interfaz conserva las funciones originales:
+- Abrir `.pz`
+- Guardar / Guardar como
+- Cargar ejemplo
+- Limpiar
+- Copiar
+- Analizar
+- Ver tokens y errores
+- Reportes HTML
+- Generación del AFD
+
+La mejora visual se realizó solamente con Swing/AWT, sin agregar librerías externas.

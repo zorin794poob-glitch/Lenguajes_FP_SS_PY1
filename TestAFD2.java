@@ -1,0 +1,2 @@
+import promptzal.generador_graphiz.GeneradorAFD; import java.nio.file.*;
+public class TestAFD2 { public static void main(String[] a) throws Exception { System.out.println(GeneradorAFD.generar(Path.of("reportes_validacion"))); } }
