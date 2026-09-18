@@ -8,13 +8,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import promptzal.modelo.ErrorLexico;
+import promptzal.modelo.TipoToken;
+import promptzal.modelo.Token;
 
 /**
  *
  * @author jonathan-zorin
  */
 public class Lexer {
-     private String entrada;
+
+    private String entrada;
     private int posicion;
     private int fila;
     private int columna;
@@ -24,6 +28,7 @@ public class Lexer {
     private final List<ErrorLexico> errores = new ArrayList<>();
 
     private static final Map<String, TipoToken> PALABRAS = new HashMap<>();
+
     static {
         PALABRAS.put("AGENTE", TipoToken.PALABRA_RESERVADA);
         PALABRAS.put("contexto", TipoToken.PALABRA_RESERVADA);
@@ -112,7 +117,9 @@ public class Lexer {
         if (siguiente() == '/') {
             avanzar();
             avanzar();
-            while (!fin() && actual() != '\n') avanzar();
+            while (!fin() && actual() != '\n') {
+                avanzar();
+            }
             return;
         }
         if (siguiente() == '*') {
@@ -199,7 +206,9 @@ public class Lexer {
 
         String valor = lexema.toString();
         TipoToken tipo = PALABRAS.get(valor);
-        if (tipo == null) tipo = TipoToken.IDENTIFICADOR;
+        if (tipo == null) {
+            tipo = TipoToken.IDENTIFICADOR;
+        }
         agregar(valor, tipo, f, col);
     }
 
@@ -241,7 +250,9 @@ public class Lexer {
     }
 
     private void avanzar() {
-        if (fin()) return;
+        if (fin()) {
+            return;
+        }
         char c = entrada.charAt(posicion++);
         if (c == '\n') {
             fila++;
@@ -251,31 +262,56 @@ public class Lexer {
         }
     }
 
-    private char actual() { return entrada.charAt(posicion); }
+    private char actual() {
+        return entrada.charAt(posicion);
+    }
+
     private char siguiente() {
         return posicion + 1 < entrada.length() ? entrada.charAt(posicion + 1) : '\0';
     }
-    private boolean fin() { return posicion >= entrada.length(); }
+
+    private boolean fin() {
+        return posicion >= entrada.length();
+    }
 
     private boolean esEspacio(char c) {
         return c == ' ' || c == '\t' || c == '\r' || c == '\n';
     }
+
     private boolean esLetra(char c) {
         return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
     }
-    private boolean esDigito(char c) { return c >= '0' && c <= '9'; }
+
+    private boolean esDigito(char c) {
+        return c >= '0' && c <= '9';
+    }
+
     private boolean esDelimitador(char c) {
         return c == '{' || c == '}' || c == '(' || c == ')' || c == ',';
     }
+
     private int contarLineas(String s) {
-        if (s.isEmpty()) return 1;
+        if (s.isEmpty()) {
+            return 1;
+        }
         int n = 1;
-        for (int i = 0; i < s.length(); i++) if (s.charAt(i) == '\n') n++;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '\n') {
+                n++;
+            }
+        }
         return n;
     }
 
-    public List<Token> getTokens() { return new ArrayList<>(tokens); }
-    public List<ErrorLexico> getErrores() { return new ArrayList<>(errores); }
-    public int getTotalLineas() { return totalLineas; }
-}
+    public List<Token> getTokens() {
+        return new ArrayList<>(tokens);
+    }
+
+    public List<ErrorLexico> getErrores() {
+        return new ArrayList<>(errores);
+    }
+
+    public int getTotalLineas() {
+        return totalLineas;
+    }
 }
